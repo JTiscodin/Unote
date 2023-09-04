@@ -1,23 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState } from "react";
+import CreateNote from "./components/CreateNote";
+import Header from "./components/Header";
+import Note from "./components/Note";
+import { v4 as uuid } from "uuid";
 function App() {
+  
+  const [Notes, setNotes] = useState([]);
+  function handleDel(id){
+    const damn = Notes.filter((each) => {
+        return each.key!==id
+    })
+    setNotes(damn)
+  }
+  function makeNewNote(heading, content) {
+    const note = {
+      key: uuid(),
+      heading: heading,
+      content: content,
+    };
+    setNotes((prev) => {
+      return [...prev, note];
+    });
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header />
+      <CreateNote send={makeNewNote} />
+      <div className="notes">
+        {Notes.map((each) => {
+          return (
+            <Note
+              key={each.key}
+              id={each.key}
+              title={each.heading}
+              del = {handleDel}
+              content={each.content}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
